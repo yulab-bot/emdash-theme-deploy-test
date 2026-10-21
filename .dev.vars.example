@@ -1,0 +1,7 @@
+# Deploy ボタンの画面に出る「秘密の値」の欄。本物の値はここに書かない（Cloudflare 側で入れる）。
+# EMDASH_ENCRYPTION_KEY: EmDash が秘密の値を暗号化する鍵（長いランダムな文字列）
+EMDASH_ENCRYPTION_KEY=
+# EMDASH_PREVIEW_SECRET: site-tools が下書きのプレビューURLを作るときの鍵（長いランダムな文字列）
+EMDASH_PREVIEW_SECRET=
+# YULAB_KEY: 親の置き場から親を取るときに付く鍵。段階1では置き場は照合しないので、下の試し用の文字列のままでよい（段階2でラボの鍵になる）
+YULAB_KEY=phase1-test-key

@@ -1,0 +1,10 @@
+{
+	"extends": "astro/tsconfigs/base",
+	"compilerOptions": {
+		"types": ["node"],
+		"paths": {
+			"@theme/*": ["./custom/*", "./node_modules/@yulab/emdash-theme/theme/*"]
+		}
+	},
+	"include": ["src", "custom", ".astro/types.d.ts", "emdash-env.d.ts", "worker-configuration.d.ts"]
+}
