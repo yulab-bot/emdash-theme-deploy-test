@@ -8,8 +8,8 @@
 		"seed": "seed/seed.json"
 	},
 	"scripts": {
-		"dev": "astro dev",
-		"build": "astro build",
+		"dev": "node scripts/yulab-parent.mjs && astro dev",
+		"build": "node scripts/yulab-parent.mjs && astro build",
 		"preview": "astro preview",
 		"deploy": "node scripts/deploy.mjs",
 		"typecheck": "astro check"
@@ -23,15 +23,17 @@
 				"description": "AI（ChatGPT など）が下書きのプレビュー URL を作るときに使う鍵。長いランダムな文字列なら何でもよいです。"
 			},
 			"YULAB_KEY": {
-				"description": "テーマを受け取るための鍵。いまは試し用の値のままで動きます（そのまま進めてください）。"
+				"description": "テーマを受け取るための鍵。1行だけ貼る"
 			}
 		}
+	},
+	"yulab": {
+		"@yulab/emdash-theme": "https://emdash-theme-parent-temp.emdash-lab.workers.dev/parent/yulab-emdash-theme-0.6.0.tgz"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^14.3.1",
 		"@astrojs/react": "^7.0.0",
 		"@emdash-cms/cloudflare": "^1.3.0",
-		"@yulab/emdash-theme": "https://emdash-theme-parent-temp.emdash-lab.workers.dev/parent/yulab-emdash-theme-0.5.0.tgz",
 		"astro": "^7.3.2",
 		"emdash": "^1.3.0",
 		"react": "19.2.4",

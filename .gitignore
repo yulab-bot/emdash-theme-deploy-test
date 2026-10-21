@@ -6,6 +6,8 @@ uploads
 data.db
 data.db-*
 .wrangler
+# scripts/yulab-parent.mjs が受け取った親の .tgz（ビルドのたびに受け取り直す）
+.yulab
 
 # Environment / Wrangler secrets
 .env

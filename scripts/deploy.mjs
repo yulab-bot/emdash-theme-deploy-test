@@ -4,6 +4,10 @@
 //   1. データベースの準備（EmDash の migration）を、`emdash migrate` でリモートの D1 に当てる
 //   2. `wrangler deploy` でサイトを出す
 //
+// テーマの鍵（YULAB_KEY）: ビルドの変数（環境変数）から来たときは、`wrangler deploy --var YULAB_KEY:<値>` で
+// 動いているサイトにも渡す（サイトが置き場に新しい版を聞くときに使う）。wrangler.jsonc の vars から来たときは
+// 何もしない（そのまま入る）。鍵の置き場を1か所にするため、Worker の秘密の値には入れない。値はログに出さない。
+//
 // なぜ 1 を先にやるか: サイトが動き出してから最初のアクセスで準備する形（実行時の auto）だと、
 // 途中で止まったときに「準備中の札（_emdash_migrations_lock）」が残り、サイトが 503 のまま
 // 動かなくなることがあった（段階1の4番）。デプロイのときに済ませておけば、実行時はやることが無い。
@@ -168,12 +172,24 @@ async function main() {
 	// 手元で `npm run deploy` だけを動かしたときのために、ビルドの結果が無ければここでビルドする
 	if (!existsSync(resolve(ROOT, "dist/server/wrangler.json")) || !existsSync(resolve(ROOT, MANIFEST))) {
 		log("ビルドの結果が無いので、先にビルドします…");
+		// テーマ（親）を受け取ってから（package.json の "build" と同じ順）
+		const p = spawnSync(process.execPath, [resolve(ROOT, "scripts/yulab-parent.mjs")], { cwd: ROOT, stdio: "inherit", env: process.env });
+		if (p.status !== 0) throw new Error(`テーマを受け取れませんでした（exit ${p.status}）`);
 		const b = run("astro", ["build"]);
 		if (b.status !== 0) throw new Error(`ビルドが失敗しました（exit ${b.status}）`);
 	}
 	await migrate();
+	const keyArgs = [];
+	const envKey = (process.env.YULAB_KEY ?? "").trim();
+	if (envKey) {
+		keyArgs.push("--var", `YULAB_KEY:${envKey}`);
+		log("鍵: 環境変数（動いているサイトにも --var で渡します）");
+	} else {
+		const config = await readWranglerConfig().catch(() => null);
+		log(`鍵: ${typeof config?.vars?.YULAB_KEY === "string" && config.vars.YULAB_KEY.trim() ? "wrangler.jsonc（そのまま入ります）" : "なし"}`);
+	}
 	log("wrangler deploy を動かします…");
-	const r = run("wrangler", ["deploy", ...process.argv.slice(2)]);
+	const r = run("wrangler", ["deploy", ...keyArgs, ...process.argv.slice(2)]);
 	process.exit(r.status ?? 1);
 }
 
