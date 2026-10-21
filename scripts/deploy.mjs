@@ -164,6 +164,13 @@ async function migrate() {
 }
 
 async function main() {
+	// Cloudflare の自動ビルドは、ビルドのコマンド（astro build）のあとにこれを動かすので、ビルドは済んでいる。
+	// 手元で `npm run deploy` だけを動かしたときのために、ビルドの結果が無ければここでビルドする
+	if (!existsSync(resolve(ROOT, "dist/server/wrangler.json")) || !existsSync(resolve(ROOT, MANIFEST))) {
+		log("ビルドの結果が無いので、先にビルドします…");
+		const b = run("astro", ["build"]);
+		if (b.status !== 0) throw new Error(`ビルドが失敗しました（exit ${b.status}）`);
+	}
 	await migrate();
 	log("wrangler deploy を動かします…");
 	const r = run("wrangler", ["deploy", ...process.argv.slice(2)]);
