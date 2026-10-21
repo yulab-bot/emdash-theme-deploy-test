@@ -6,6 +6,14 @@
 	"compatibility_flags": ["nodejs_compat"],
 	// デプロイ直後から workers.dev のアドレスで開けるようにする（段階0の5番で、オフのままだった）
 	"workers_dev": true,
+	// ログ（Observability）を最初からオンにする。無いと、サイトで何が起きたかを Cloudflare の画面で見られない（段階1の4番）
+	"observability": {
+		"enabled": true,
+		"logs": {
+			"enabled": true,
+			"invocation_logs": true,
+		},
+	},
 	"d1_databases": [
 		{
 			"binding": "DB",
